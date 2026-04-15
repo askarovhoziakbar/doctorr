@@ -1,0 +1,6 @@
+@if (firestoreService.userRole()) {
+  <p>Привет, ты зашел как: {{ firestoreService.userRole() }}</p>
+  <button (click)="firestoreService.logout()">Выйти</button>
+} @else {
+  <p>Пожалуйста, войдите в систему</p>
+}

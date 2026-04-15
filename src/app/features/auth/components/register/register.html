@@ -1,0 +1,119 @@
+<form
+  #registerForm="ngForm"
+  id="registerForm"
+  class="auth-form"
+  (submit)="onRegister(); $event.preventDefault()"
+>
+  <h2>Регистрация пациента</h2>
+
+  @if (phoneExistsError()) {
+    <div style="color: #ff4d4d; font-size: 0.8rem; margin-top: 5px">
+      <i class="fas fa-exclamation-triangle"></i>
+      Пользователь с таким номером телефона уже зарегистрирован
+    </div>
+  }
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="regFirstName"> <i class="fas fa-user"></i> Имя * </label>
+      <input
+        type="text"
+        id="regFirstName"
+        required
+        placeholder="Имя"
+        name="firstName"
+        [ngModel]="firstName()"
+        (ngModelChange)="firstName.set($event)"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="regLastName"> <i class="fas fa-user"></i> Фамилия * </label>
+      <input
+        type="text"
+        id="regLastName"
+        required
+        placeholder="Фамилия"
+        name="lastName"
+        [ngModel]="lastName()"
+        (ngModelChange)="lastName.set($event)"
+      />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="regBirthDate"> <i class="fas fa-calendar"></i> Дата рождения * </label>
+    <input
+      type="date"
+      id="regBirthDate"
+      required
+      name="birthDate"
+      [ngModel]="birthDate()"
+      (ngModelChange)="birthDate.set($event)"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="regPhone"> <i class="fas fa-phone"></i> Телефон * </label>
+    <input
+      type="tel"
+      id="regPhone"
+      required
+      placeholder="+7 (___) ___-__-__"
+      name="phone"
+      [ngModel]="phone()"
+      (ngModelChange)="phone.set($event)"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="regEmail"> <i class="fas fa-envelope"></i> Email * </label>
+    <input
+      type="email"
+      id="regEmail"
+      required
+      placeholder="example@mail.com"
+      name="email"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="regPassword"> <i class="fas fa-lock"></i> Пароль * </label>
+    <input
+      type="password"
+      id="regPassword"
+      required
+      placeholder="Минимум 6 символов"
+      minlength="6"
+      name="password"
+      [ngModel]="password()"
+      (ngModelChange)="password.set($event)"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="regPasswordConfirm"> <i class="fas fa-lock"></i> Подтверждение пароля * </label>
+    <input
+      type="password"
+      id="regPasswordConfirm"
+      required
+      placeholder="Повторите пароль"
+      name="passwordConfirm"
+      [ngModel]="passwordConfirm()"
+      (ngModelChange)="passwordConfirm.set($event)"
+    />
+  </div>
+
+  @if (wasSubmitted() && !passwordsMatch()) {
+    <div class="error-message">Пароли не совпадают</div>
+  }
+
+  <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">
+    <i class="fas fa-user-plus"></i> Зарегистрироваться
+  </button>
+
+  <div id="registerError" class="error-message" style="display: none"></div>
+  <div id="registerSuccess" class="success-message" style="display: none"></div>
+</form>

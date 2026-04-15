@@ -1,0 +1,37 @@
+<form class="auth-form" (submit)="onLogin(); $event.preventDefault()">
+  <h2>Вход в систему</h2>
+
+  <div class="form-group">
+    <label for="regPhone"> <i class="fas fa-phone"></i> Телефон * </label>
+    <input
+      type="tel"
+      id="regPhone"
+      required
+      placeholder="+7 (___) ___-__-__"
+      name="phone"
+      [ngModel]="phone()"
+      (ngModelChange)="phone.set($event)"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="loginPassword"> <i class="fas fa-lock"></i> Пароль </label>
+    <input
+      name="password"
+      type="password"
+      id="loginPassword"
+      required
+      placeholder="Введите пароль"
+      [ngModel]="password()"
+      (ngModelChange)="password.set($event)"
+    />
+  </div>
+
+  <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Войти</button>
+
+  @if (errorMessage()) {
+    <div id="loginError" class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+</form>

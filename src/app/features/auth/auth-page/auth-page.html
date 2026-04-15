@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="login-card">
+    <div class="logo-section">
+      <i class="fas fa-heartbeat"></i>
+      <h1>ГЭРБ Мониторинг</h1>
+      <p class="subtitle">
+        Система цифрового мониторинга симптомов ГЭРБ с использованием шкалы GERD-HRQL
+      </p>
+    </div>
+
+    <!-- Auth Tabs -->
+    <app-auth-tabs></app-auth-tabs>
+
+    <div class="forms-wrapper">
+      @if (activeTab() === 'login') {
+        <!-- Форма входа -->
+        <div class="fade-in">
+          <app-login></app-login>
+        </div>
+      } @else {
+        <!-- Форма регистрации -->
+        <div class="fade-in">
+          <app-register></app-register>
+        </div>
+      }
+    </div>
+  </div>
+</div>

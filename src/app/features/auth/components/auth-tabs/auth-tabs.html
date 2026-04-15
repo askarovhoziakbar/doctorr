@@ -1,0 +1,8 @@
+<div class="tabs">
+  <button class="tab" [class.active]="activeTab() === 'login'" (click)="setTab('login')">
+    Вход
+  </button>
+  <button class="tab" [class.active]="activeTab() === 'register'" (click)="setTab('register')">
+    Регистрация пациента
+  </button>
+</div>
