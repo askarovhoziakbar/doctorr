@@ -11,6 +11,7 @@ import {
 } from '@angular/fire/firestore';
 import { User } from '../models/user.interface';
 import { Router } from '@angular/router';
+import { PatientService } from './patient-service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ import { Router } from '@angular/router';
 export class FirestoreService {
   private firestore = inject(Firestore);
   private router = inject(Router);
+  private patientService = inject(PatientService);
 
   userRole = signal<string | null>(sessionStorage.getItem('user_role'));
 
@@ -25,6 +27,9 @@ export class FirestoreService {
   logout() {
     this.userRole.set(null);
     sessionStorage.removeItem('user_role');
+    sessionStorage.removeItem('patientId');
+    this.patientService.currentPatient.set(null);
+    this.router.navigate(['/auth']);
   }
 
   // Вспомогательный метод для получения ссылки на коллекцию
@@ -75,13 +80,19 @@ export class FirestoreService {
       const snap = await getDocs(q);
 
       if (!snap.empty) {
-        const data = snap.docs[0].data() as any;
+        const docSnap = snap.docs[0];
+        const data = docSnap.data() as any;
+        const userId = docSnap.id;
 
         this.userRole.set(data.role);
         sessionStorage.setItem('user_role', data.role);
+        sessionStorage.setItem('patientId', userId);
 
-        console.log(`Вход выполнен! Ваша роль в базе: ${data.role}`);
+        if (data.role === 'patient') {
+          this.patientService.loadPatientData(userId);
+        }
 
+        console.log(`Вход выполнен! Роль: ${data.role}, ID: ${userId}`);
         return { success: true, role: data.role };
       }
     }
@@ -90,12 +101,15 @@ export class FirestoreService {
   }
 
   redirectUser() {
-    const role = this.userRole();
-    if (role === 'patient') {
+    const role = this.userRole() || sessionStorage.getItem('user_role');
+    const userId = sessionStorage.getItem('patientId'); // Или 'doctorId'
+
+    if (role === 'patient' && userId) {
       this.router.navigate(['/patient-dashboard']);
-    } else if (role === 'doctor') {
+    } else if (role === 'doctor' && userId) {
       this.router.navigate(['/doctor-dashboard']);
     } else {
+      console.warn('Ошибка редиректа: роль или ID отсутствуют');
       this.router.navigate(['/auth']);
     }
   }

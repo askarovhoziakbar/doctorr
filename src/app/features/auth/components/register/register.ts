@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FirestoreService } from '../../../../core/services/firestore-service';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../../core/models/user.interface';
+import { PatientService } from '../../../../core/services/patient-service';
 
 @Component({
   selector: 'app-register',
@@ -11,6 +12,7 @@ import { User } from '../../../../core/models/user.interface';
 })
 export class Register {
   private firestoreService = inject(FirestoreService);
+  private patientService = inject(PatientService);
 
   // Вычисляемое свойство для проверки совпадения паролей
   passwordsMatch = computed(() => {
@@ -59,14 +61,17 @@ export class Register {
 
       this.firestoreService.userRole.set('patient');
       sessionStorage.setItem('user_role', 'patient');
+      sessionStorage.setItem('patientId', result.id);
 
-      this.firestoreService.redirectUser();
+      this.patientService.currentPatient.set(dataToSend);
 
       console.log(`Документ создан! ID: ${result.id}\nДанные:`, dataToSend);
 
+      this.firestoreService.redirectUser();
+
       this.wasSubmitted.set(false);
     } catch (e) {
-      console.log('Что-то пошло не так', e);
+      console.error('Что-то пошло не так', e);
     }
   }
 }

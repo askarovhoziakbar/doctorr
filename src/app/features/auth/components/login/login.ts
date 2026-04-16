@@ -27,7 +27,6 @@ export class Login {
 
         this.firestoreService.redirectUser();
       } else {
-        console.log('false. Неверный телефон или пароль');
         alert('Ошибка: Данные не совпадают');
       }
     } catch (e) {
