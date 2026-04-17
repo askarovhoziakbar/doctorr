@@ -1,4 +1,14 @@
 <div class="container">
-  <!-- Question header component -->
-  <app-question-header></app-question-header>
+  <app-question-header [timePointLabel]="headerLabel" (cancel)="onCancelRequested()">
+  </app-question-header>
+  <div class="questionnaire-container">
+    <app-question-card
+      *ngFor="let q of questions"
+      [question]="q"
+      [scoreLabels]="scoreLabels"
+      [selectedScore]="answers[q.id]"
+      (answerSelected)="handleAnswer(q.id, $event)"
+    >
+    </app-question-card>
+  </div>
 </div>

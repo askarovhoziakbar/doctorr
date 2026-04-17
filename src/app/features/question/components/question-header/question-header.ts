@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-question-header',
@@ -7,10 +7,17 @@ import { Component } from '@angular/core';
   styleUrl: './question-header.scss',
 })
 export class QuestionHeader {
-  cancelQuestionnaire() {
-    // Implement cancellation logic here, e.g., navigate back to the dashboard
-    console.log('Questionnaire cancelled');
-  }
+  @Input() timePointLabel: string = '';
+  @Output() cancel = new EventEmitter<void>();
 
-  timePointLabel = 'Time Point 1'; // This can be dynamically set based on the current time point
+  onCancelClick() {
+    const confirmed = confirm(
+      'Вы уверены, что хотите отменить заполнение опросника? Все данные будут потеряны.',
+    );
+
+    if (confirmed) {
+      this.cancel.emit();
+      console.log('Опросник отменён');
+    }
+  }
 }

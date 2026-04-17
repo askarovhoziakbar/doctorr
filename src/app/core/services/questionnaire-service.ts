@@ -4,32 +4,56 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class QuestionnaireService {
-  // 1. Централизованный конфиг таймлайна
-  readonly TIMELINE_CONFIG = [
-    { label: 'Первый визит', months: 0, tp: 0 },
-    { label: '3 месяца', months: 3, tp: 3 },
-    { label: '6 месяцев', months: 6, tp: 6 },
-    { label: '12 месяцев', months: 12, tp: 12 },
+  // Создаем словарь (карту) названий.
+  // Это удобнее, чем писать много if/else.
+  private readonly labels: Record<number, string> = {
+    0: 'Первый визит (исходный уровень)',
+    3: '3 месяца после первого визита',
+    6: '6 месяцев после первого визита',
+    12: '12 месяцев после первого визита',
+  };
+
+  readonly QUESTIONS = [
+    { id: 1, text: 'Как сильно вас беспокоит изжога?' },
+    { id: 2, text: 'Беспокоит ли вас изжога в положении лежа?' },
+    { id: 3, text: 'Беспокоит ли вас изжога в положении стоя?' },
+    { id: 4, text: 'Беспокоит ли вас изжога после еды?' },
+    { id: 5, text: 'Влияет ли изжога на вашу диету?' },
+    { id: 6, text: 'Просыпаетесь ли вы от изжоги?' },
+    { id: 7, text: 'Беспокоит ли вас регургитация (заброс пищи)?' },
+    { id: 8, text: 'Беспокоит ли вас затруднение при глотании?' },
+    { id: 9, text: 'Беспокоит ли вас боль при глотании?' },
+    { id: 10, text: 'Влияют ли лекарства на вашу повседневную жизнь?' },
   ];
 
-  // 2. Логика раскраски баллов
-  getScoreSeverity(score: number): 'excellent' | 'warning' | 'danger' {
-    if (score <= 10) return 'excellent';
-    if (score <= 25) return 'warning';
-    return 'danger';
-  }
+  // Тексты для кнопок (баллы 0-5)
+  readonly SCORE_LABELS = [
+    'нет симптома',
+    'есть, но не беспокоит',
+    'иногда беспокоит',
+    'часто беспокоит',
+    'беспокоит постоянно',
+    'мешает повседневной деятельности',
+  ];
 
-  // 3. Подсчет даты дедлайна
-  calculateDueDate(registrationDate: Date, monthsToAdd: number): Date {
-    const dueDate = new Date(registrationDate);
-    dueDate.setMonth(dueDate.getMonth() + monthsToAdd);
-    return dueDate;
-  }
+  readonly SATISFACTION_LABELS = [
+    'очень доволен',
+    'доволен',
+    'нейтрально',
+    'не доволен',
+    'очень не доволен',
+  ];
 
-  // 4. Подсчет оставшихся дней
-  getDaysUntil(dueDate: Date): number {
-    const today = new Date();
-    const diffMs = dueDate.getTime() - today.getTime();
-    return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  /**
+   * Принимает номер точки (tp) и возвращает красивое название.
+   */
+  getTimePointLabel(tp: number): string {
+    // Проверяем: есть ли такое число в нашем словаре?
+    if (tp in this.labels) {
+      return this.labels[tp];
+    }
+
+    // Если пришло странное число (например, 5), возвращаем текст по умолчанию
+    return `Временная точка: ${tp} месяцев`;
   }
 }

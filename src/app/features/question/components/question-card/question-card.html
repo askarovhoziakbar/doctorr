@@ -1,0 +1,20 @@
+<div class="question-card mt-3">
+  <p class="question-text">
+    <span class="question-number">{{ question.id }}.</span>
+    {{ question.text }}
+  </p>
+
+  <div class="options-grid">
+    <button
+      *ngFor="let score of [0, 1, 2, 3, 4, 5]"
+      type="button"
+      class="option-btn"
+      [class.selected]="selectedScore === score"
+      (click)="setScore(score)"
+      [title]="scoreLabels[score]"
+    >
+      <div class="score-number">{{ score }}</div>
+      <div class="score-label">{{ scoreLabels[score] }}</div>
+    </button>
+  </div>
+</div>
