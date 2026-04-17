@@ -6,10 +6,18 @@ import { QuestionCard } from '../components/question-card/question-card';
 import { CommonModule } from '@angular/common';
 import { QuestionnaireFooter } from '../components/questionnaire-footer/questionnaire-footer';
 import { SatisfactionCard } from '../components/satisfaction-card/satisfaction-card';
+import { QuestionnaireInstructions } from '../components/questionnaire-instructions/questionnaire-instructions';
 
 @Component({
   selector: 'app-question-dashboard',
-  imports: [QuestionHeader, QuestionCard, CommonModule, QuestionnaireFooter, SatisfactionCard],
+  imports: [
+    QuestionHeader,
+    QuestionCard,
+    CommonModule,
+    QuestionnaireFooter,
+    SatisfactionCard,
+    QuestionnaireInstructions,
+  ],
   templateUrl: './question-dashboard.html',
   styleUrl: './question-dashboard.scss',
 })
@@ -26,8 +34,8 @@ export class QuestionDashboard {
   headerLabel: string = '';
   timePoint: number = 0;
 
+  // При загрузке компонента
   ngOnInit() {
-    // 1. Получаем временную точку из сессии
     const savedTp = sessionStorage.getItem('fillTimePoint');
     this.timePoint = savedTp ? parseInt(savedTp) : 0;
 
@@ -37,7 +45,13 @@ export class QuestionDashboard {
 
   // Универсальный метод для записи ответов (и для 1-10, и для 11 вопроса)
   handleAnswer(qId: number, score: number) {
-    this.answers[qId] = score;
+    this.answers = {
+      ...this.answers,
+      [qId]: score,
+    };
+
+    console.log('Ответ получен:', qId, score);
+    console.log('Всего ответов:', Object.keys(this.answers).length);
   }
 
   // Считаем сумму баллов (только для первых 10 вопросов)
@@ -64,13 +78,20 @@ export class QuestionDashboard {
   async saveResults() {
     if (!this.isComplete) return;
 
-    const patientId = sessionStorage.getItem('patientId') || 'guest';
+    const patientId = sessionStorage.getItem('patientId');
 
-    // Формируем объект точно так же, как в твоем JS
+    if (!patientId) {
+      alert('Ошибка: ID пациента не найден. Пожалуйста, перезайдите в систему.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const interpretation = this.qService.getInterpretation(this.totalScore);
+
     const result = {
       patient_id: patientId,
       time_point: this.timePoint,
-      answers: this.answers, // Сохраняем весь объект ответов
+      answers: this.answers,
       total_score: this.totalScore,
       satisfaction: this.answers[11],
       completed_at: new Date().toISOString(),
@@ -78,11 +99,19 @@ export class QuestionDashboard {
 
     try {
       await this.qService.saveQuestionnaireResult(result);
-      alert(`Готово! Ваш балл: ${this.totalScore}/50`);
+
+      await this.qService.updateNotificationStatus(patientId, this.timePoint);
+
+      alert(
+        `Опросник успешно отправлен!\n\n` +
+          `Ваш балл GERD-HRQL: ${this.totalScore}/50\n\n` +
+          `${interpretation}`,
+      );
+
       this.cleanupAndExit();
     } catch (error) {
-      console.error('Ошибка сохранения:', error);
-      alert('Не удалось отправить данные.');
+      console.error('Ошибка при сохранении:', error);
+      alert('Не удалось отправить данные. Попробуйте еще раз.');
     }
   }
 

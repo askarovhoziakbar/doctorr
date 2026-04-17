@@ -9,7 +9,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class SatisfactionCard {
   @Input() selectedSatisfaction: number | undefined;
 
-  // Отправляем ID выбранного варианта наверх в QuestionDashboard
   @Output() satisfactionSelected = new EventEmitter<number>();
 
   select(value: number) {
