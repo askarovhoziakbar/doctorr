@@ -43,15 +43,12 @@ export class QuestionDashboard {
     this.headerLabel = this.qService.getTimePointLabel(this.timePoint);
   }
 
-  // Универсальный метод для записи ответов (и для 1-10, и для 11 вопроса)
   handleAnswer(qId: number, score: number) {
     this.answers = {
       ...this.answers,
       [qId]: score,
     };
-
-    console.log('Ответ получен:', qId, score);
-    console.log('Всего ответов:', Object.keys(this.answers).length);
+    console.log(`Вопрос ${qId} обновлен, значение: ${score}`);
   }
 
   // Считаем сумму баллов (только для первых 10 вопросов)
