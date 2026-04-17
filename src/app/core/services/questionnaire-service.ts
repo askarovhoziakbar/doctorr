@@ -1,18 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Firestore, collection, addDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionnaireService {
-  // Создаем словарь (карту) названий.
-  // Это удобнее, чем писать много if/else.
-  private readonly labels: Record<number, string> = {
-    0: 'Первый визит (исходный уровень)',
-    3: '3 месяца после первого визита',
-    6: '6 месяцев после первого визита',
-    12: '12 месяцев после первого визита',
-  };
+  private firestore = inject(Firestore);
 
+  // Переносим вопросы из твоего JS сюда
   readonly QUESTIONS = [
     { id: 1, text: 'Как сильно вас беспокоит изжога?' },
     { id: 2, text: 'Беспокоит ли вас изжога в положении лежа?' },
@@ -26,7 +21,7 @@ export class QuestionnaireService {
     { id: 10, text: 'Влияют ли лекарства на вашу повседневную жизнь?' },
   ];
 
-  // Тексты для кнопок (баллы 0-5)
+  // Метки для баллов (0-5)
   readonly SCORE_LABELS = [
     'нет симптома',
     'есть, но не беспокоит',
@@ -36,24 +31,24 @@ export class QuestionnaireService {
     'мешает повседневной деятельности',
   ];
 
-  readonly SATISFACTION_LABELS = [
-    'очень доволен',
-    'доволен',
-    'нейтрально',
-    'не доволен',
-    'очень не доволен',
-  ];
-
-  /**
-   * Принимает номер точки (tp) и возвращает красивое название.
-   */
+  // Логика отображения временных точек (displayTimePointInfo из JS)
   getTimePointLabel(tp: number): string {
-    // Проверяем: есть ли такое число в нашем словаре?
-    if (tp in this.labels) {
-      return this.labels[tp];
-    }
+    const labels: Record<number, string> = {
+      0: 'Первый визит (исходный уровень)',
+      3: '3 месяца после первого визита',
+      6: '6 месяцев после первого визита',
+      12: '12 месяцев после первого визита',
+    };
+    return labels[tp] || `Временная точка: ${tp} месяцев`;
+  }
 
-    // Если пришло странное число (например, 5), возвращаем текст по умолчанию
-    return `Временная точка: ${tp} месяцев`;
+  // Сохранение в Firebase Firestore
+  async saveQuestionnaireResult(data: any) {
+    // В Firestore коллекция будет называться 'reports' или 'questionnaires'
+    const reportsCollection = collection(this.firestore, 'reports');
+    return addDoc(reportsCollection, {
+      ...data,
+      serverTimestamp: new Date(), // Добавляем время сервера для надежности
+    });
   }
 }

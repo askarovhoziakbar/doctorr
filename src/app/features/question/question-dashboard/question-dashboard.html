@@ -1,6 +1,9 @@
 <div class="container">
   <app-question-header [timePointLabel]="headerLabel" (cancel)="onCancelRequested()">
   </app-question-header>
+
+  <!-- <app-questionnaire-instructions></app-questionnaire-instructions> -->
+
   <div class="questionnaire-container">
     <app-question-card
       *ngFor="let q of questions"
@@ -10,5 +13,19 @@
       (answerSelected)="handleAnswer(q.id, $event)"
     >
     </app-question-card>
+
+    <app-satisfaction-card
+      [selectedSatisfaction]="answers[11]"
+      (satisfactionSelected)="handleAnswer(11, $event)"
+    >
+    </app-satisfaction-card>
+
+    <app-questionnaire-footer
+      [currentProgress]="(answers | keyvalue).length"
+      [totalScore]="totalScore"
+      [isValid]="isComplete"
+      (submit)="saveResults()"
+    >
+    </app-questionnaire-footer>
   </div>
 </div>
