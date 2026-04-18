@@ -15,8 +15,24 @@ export class PatientTimeline {
   @Output() fill = new EventEmitter<number>();
   @Output() view = new EventEmitter<string>();
 
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.pService.initPatient().then((res) => {
+      console.log('Инициализация данных пациента завершена:', res);
+    });
+  }
+
   // Метод для получения цвета бейджа (из твоей логики JS)
   getBadgeClass(score: number): string {
     return this.pService.getScoreBadge(score);
+  }
+
+  // Написать метод для получения обще заполненных данных для отображения в шаблоне
+  getTimelineData() {
+    const patient = this.pService.currentPatient();
+    const questionnaires = this.pService.questionnaires();
+    // Логика для получения данных временной шкалы
+    console.log('Получение данных для временной шкалы:', { patient, questionnaires });
   }
 }

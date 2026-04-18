@@ -11,8 +11,8 @@
             <i
               class="fas"
               [ngClass]="{
-                'fa-check-circle': item.status === 'complete',
-                'fa-exclamation-circle': item.status === 'overdue',
+                'fa-check-circle green': item.status === 'complete',
+                'fa-exclamation-circle ': item.status === 'overdue',
                 'fa-clock': item.status === 'pending',
               }"
             ></i>
@@ -22,13 +22,13 @@
             <h4>{{ item.label }}</h4>
 
             <p class="text-secondary">
-              <i class="fas fa-calendar"></i> {{ item.dueDate | date: 'd MMMM yyyy' : '' : 'ru' }}
+              <i class="fas fa-calendar"></i> {{ item.dueDate | date: 'mediumDate' }}
             </p>
 
             <p class="mt-1">
               <strong>Статус:</strong> {{ item.statusText }}
               @if (item.status === 'complete' && item.report) {
-                {{ item.report.completed_at | date: 'd.MM.yyyy' }}
+                {{ item.statusText || 'Обработка...' }}
               }
             </p>
 

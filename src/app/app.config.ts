@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -6,6 +6,11 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { registerLocaleData } from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+
+// Регистрируем данные русской локали
+registerLocaleData(localeRu);
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAJOoaWRSS5iD9LLERWRuPZlFU5WZiap8Y',
@@ -25,5 +30,6 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
     provideCharts(withDefaultRegisterables()),
+    { provide: LOCALE_ID, useValue: 'ru-RU' },
   ],
 };
