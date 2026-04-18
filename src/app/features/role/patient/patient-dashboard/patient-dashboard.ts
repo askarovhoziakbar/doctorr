@@ -12,5 +12,20 @@ import { Router } from '@angular/router';
   styleUrl: './patient-dashboard.scss',
 })
 export class PatientDashboard {
-  public firestoreService = inject(FirestoreService);
+  private router = inject(Router);
+  public pService = inject(PatientService);
+
+  // 1. Функция для кнопки "Заполнить"
+  onFillQuestionnaire(timePoint: number) {
+    // Сохраняем точку, чтобы страница опросника знала, что мы заполняем
+    sessionStorage.setItem('fillTimePoint', timePoint.toString());
+    // Переходим на страницу опросника (проверь, как называется твой роут)
+    this.router.navigate(['/questionnaire']);
+  }
+
+  // 2. Функция для кнопки "Просмотр"
+  onViewQuestionnaire(reportId: string) {
+    console.log('Открываем отчет с ID:', reportId);
+    // Здесь позже напишем открытие модалки с деталями
+  }
 }

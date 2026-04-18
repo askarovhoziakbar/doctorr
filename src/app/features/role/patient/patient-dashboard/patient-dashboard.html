@@ -1,4 +1,5 @@
 <div class="container">
   <app-dashboard-header></app-dashboard-header>
-  <app-patient-timeline></app-patient-timeline>
+  <app-patient-timeline (fill)="onFillQuestionnaire($event)" (view)="onViewQuestionnaire($event)">
+  </app-patient-timeline>
 </div>
