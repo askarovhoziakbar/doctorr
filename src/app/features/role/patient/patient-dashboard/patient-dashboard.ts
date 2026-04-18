@@ -13,18 +13,4 @@ import { Router } from '@angular/router';
 })
 export class PatientDashboard {
   public firestoreService = inject(FirestoreService);
-  public pService = inject(PatientService);
-  private router = inject(Router);
-
-  onFillQuestionnaire(timePoint: number) {
-    // Сохраняем точку в сессию, как в твоем JS
-    sessionStorage.setItem('fillTimePoint', timePoint.toString());
-    // Уходим на страницу опросника
-    this.router.navigate(['/questionnaire']);
-  }
-
-  onViewQuestionnaire(reportId: string) {
-    console.log('Открываем просмотр опросника с ID:', reportId);
-    // Здесь позже добавим логику открытия модального окна
-  }
 }

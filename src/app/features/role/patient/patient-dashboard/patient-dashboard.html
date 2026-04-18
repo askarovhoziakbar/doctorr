@@ -1,10 +1,4 @@
 <div class="container">
   <app-dashboard-header></app-dashboard-header>
-  <app-patient-timeline
-    [registrationDate]="pService.currentPatient().registration_date"
-    [questionnaires]="pService.questionnaires()"
-    (fill)="onFillQuestionnaire($event)"
-    (view)="onViewQuestionnaire($event)"
-  >
-  </app-patient-timeline>
+  <app-patient-timeline></app-patient-timeline>
 </div>

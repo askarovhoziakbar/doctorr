@@ -1,90 +1,62 @@
-<div class="table-container shadow-sm">
-  <div class="table-header d-flex justify-content-between align-items-center">
-    <div class="header-title">
-      <h3><i class="fas fa-clipboard-list text-primary"></i> План мониторинга GERD-HRQL</h3>
-      <p class="text-secondary small mb-0">Следите за графиком для точности лечения</p>
-    </div>
-
-    <div class="header-stats d-flex">
-      <div class="stat-item text-center">
-        <span class="d-block font-weight-bold">{{ getCompletedCount() }} / 4</span>
-        <small class="text-muted">Пройдено</small>
-      </div>
-      <div class="stat-divider mx-3"></div>
-      <div class="stat-item text-center">
-        <span class="d-block font-weight-bold text-danger">{{ getOverdueCount() }}</span>
-        <small class="text-muted">Пропущено</small>
-      </div>
-    </div>
+<div class="table-container">
+  <div class="table-header">
+    <h3><i class="fas fa-clipboard-list"></i> Статус заполнения опросников GERD-HRQL</h3>
   </div>
 
   <div style="padding: 30px">
     <div class="timeline">
-      @for (item of timelineItems; track item.tp) {
+      @for (item of pService.timeline(); track item.tp) {
         <div class="timeline-item">
-          <div class="timeline-marker {{ 'timeline-' + item.status }}">
+          <div class="timeline-marker" [ngClass]="'timeline-' + item.status">
             <i
-              class="fas {{
-                item.status === 'complete'
-                  ? 'fa-check-circle'
-                  : item.status === 'overdue'
-                    ? 'fa-exclamation-circle'
-                    : 'fa-clock'
-              }}"
+              class="fas"
+              [ngClass]="{
+                'fa-check-circle': item.status === 'complete',
+                'fa-exclamation-circle': item.status === 'overdue',
+                'fa-clock': item.status === 'pending',
+              }"
             ></i>
           </div>
 
           <div class="timeline-content">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h4>{{ item.label }}</h4>
-                <p class="text-secondary mb-1">
-                  <i class="fas fa-calendar-alt mr-1"></i>
-                  {{ item.dueDate | date: 'd MMMM yyyy' : '' : 'ru' }}
-                </p>
-              </div>
-              <span class="status-pill {{ item.status }}">{{ item.statusText }}</span>
-            </div>
+            <h4>{{ item.label }}</h4>
+
+            <p class="text-secondary">
+              <i class="fas fa-calendar"></i> {{ item.dueDate | date: 'd MMMM yyyy' : '' : 'ru' }}
+            </p>
+
+            <p class="mt-1">
+              <strong>Статус:</strong> {{ item.statusText }}
+              @if (item.status === 'complete' && item.report) {
+                {{ item.report.completed_at | date: 'd.MM.yyyy' }}
+              }
+            </p>
 
             @if (item.status === 'complete' && item.report) {
-              <div class="result-box mt-2">
-                <div class="d-flex align-items-center mb-1">
-                  <span class="mr-2 text-dark font-weight-bold">Результат:</span>
-                  <span class="badge {{ getScoreBadge(item.report.total_score) }}">
-                    {{ item.report.total_score }} / 50 ({{
-                      getScoreDescription(item.report.total_score)
-                    }})
-                  </span>
-                </div>
-
-                @if (item.report.satisfaction) {
-                  <p class="small mb-2 italic">
-                    <i class="far fa-smile mr-1"></i>
-                    Удовлетворенность: <strong>{{ item.report.satisfaction }}</strong>
-                  </p>
-                }
-
-                <button class="btn btn-sm btn-link pl-0" (click)="viewDetail(item.report.id)">
-                  <i class="fas fa-search-plus"></i> Детализация ответов
-                </button>
-              </div>
-            } @else if (item.canFill) {
-              <div class="mt-3">
-                <button
-                  class="btn btn-sm px-4 {{
-                    item.status === 'overdue' ? 'btn-danger' : 'btn-primary'
-                  }}"
-                  (click)="fillNow(item.tp)"
-                >
-                  <i class="fas fa-pen-nib mr-1"></i>
-                  {{ item.status === 'overdue' ? 'Срочно заполнить' : 'Начать заполнение' }}
-                </button>
-              </div>
-            } @else {
-              <p class="text-muted small mt-3 italic">
-                <i class="fas fa-lock mr-1"></i> Доступ откроется автоматически
+              <p>
+                <strong>Балл GERD-HRQL:</strong>
+                <span class="badge" [ngClass]="getBadgeClass(item.report.total_score)">
+                  {{ item.report.total_score }}/50
+                </span>
               </p>
             }
+
+            <div class="mt-2">
+              @if (item.status === 'complete') {
+                <button class="btn btn-sm btn-outline" (click)="view.emit(item.report.id)">
+                  <i class="fas fa-eye"></i> Просмотр
+                </button>
+              } @else if (item.canFill) {
+                <button
+                  class="btn btn-sm"
+                  [ngClass]="item.status === 'overdue' ? 'btn-danger' : 'btn-primary'"
+                  (click)="fill.emit(item.tp)"
+                >
+                  <i class="fas fa-edit"></i>
+                  {{ item.status === 'overdue' ? 'Заполнить сейчас' : 'Заполнить опросник' }}
+                </button>
+              }
+            </div>
           </div>
         </div>
       }
