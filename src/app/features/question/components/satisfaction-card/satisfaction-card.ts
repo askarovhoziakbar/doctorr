@@ -12,6 +12,7 @@ export class SatisfactionCard {
   @Output() satisfactionSelected = new EventEmitter<number>();
 
   select(value: number) {
-    this.satisfactionSelected.emit(value);
+    this.selectedSatisfaction = value; // Мгновенно подсвечиваем кнопку
+    this.satisfactionSelected.emit(value); // Отправляем родителю
   }
 }

@@ -1,0 +1,46 @@
+<div id="questionnaireModal" class="modal" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="modal-close" (click)="close.emit()">&times;</span>
+
+    <div id="questionnaireDetail">
+      <h2><i class="fas fa-clipboard-list"></i> Детали опросника</h2>
+
+      <div class="mt-2 mb-3 info-summary">
+        <p><strong>Временная точка:</strong> {{ getTimePointLabel(data.time_point) }}</p>
+        <p>
+          <strong>Дата заполнения:</strong> {{ data.completed_at | date: 'longDate' : '' : 'ru' }}
+        </p>
+        <p>
+          <strong>Общий балл:</strong>
+          <span class="badge" [ngClass]="getScoreBadge(data.total_score)">
+            {{ data.total_score }}/50
+          </span>
+        </p>
+        <p><strong>Удовлетворенность:</strong> {{ getSatisfactionLabel(data.satisfaction) }}</p>
+      </div>
+
+      <hr />
+
+      <h3 class="mt-2">Ответы на вопросы</h3>
+
+      <div class="questions-list">
+        @for (qText of questions; track qText.id; let i = $index) {
+          <div class="question-card mt-2">
+            <p class="question-text">
+              <span class="question-number">{{ i + 1 }}.</span>
+              {{ qText.text }}
+            </p>
+
+            @let score = data.answers[i + 1];
+
+            <p>
+              <strong>Ответ:</strong>
+              <span class="score-value">{{ score }}</span> балла -
+              <small class="text-secondary">{{ getScoreLabel(score) }}</small>
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

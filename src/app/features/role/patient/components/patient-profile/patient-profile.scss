@@ -1,0 +1,26 @@
+.profile-info-grid {
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.profile-item {
+  background: #f7fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #edf2f7;
+
+  strong {
+    color: #718096;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  span {
+    color: #2d3748;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}

@@ -1,0 +1,29 @@
+<div class="table-container mt-3" *ngIf="patient">
+  <div class="table-header">
+    <h3><i class="fas fa-id-card"></i> Профиль</h3>
+  </div>
+  <div class="profile-info-grid">
+    <div class="profile-item">
+      <strong><i class="fas fa-user"></i> ФИО</strong>
+      <span>{{ patient.firstName }} {{ patient.lastName }}</span>
+    </div>
+    <div class="profile-item">
+      <strong><i class="fas fa-birthday-cake"></i> Дата рождения</strong>
+      <span>
+        @if (patient.birthDate || patient.birth_date) {
+          {{ calculateAge(patient.birthDate || patient.birth_date) }} лет
+        } @else {
+          Не указан
+        }
+      </span>
+    </div>
+    <div class="profile-item">
+      <strong><i class="fas fa-phone"></i> Телефон</strong>
+      <span>{{ patient.phone }}</span>
+    </div>
+    <div class="profile-item">
+      <strong><i class="fas fa-calendar-plus"></i> Дата регистрации</strong>
+      <span>{{ patient.createdAt?.toDate() | date: 'dd.MM.yyyy' }}</span>
+    </div>
+  </div>
+</div>

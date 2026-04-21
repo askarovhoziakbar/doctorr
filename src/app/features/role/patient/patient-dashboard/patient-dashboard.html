@@ -1,4 +1,19 @@
 <div class="container">
   <app-dashboard-header></app-dashboard-header>
   <app-patient-timeline (fill)="onFill($event)" (view)="onView($event)"> </app-patient-timeline>
+  <app-patient-results-table [results]="pService.questionnaires()" (view)="onView($event)">
+  </app-patient-results-table>
+  @if (pService.questionnaires().length > 0) {
+    <app-patient-symptoms-chart [questionnaires]="pService.questionnaires()">
+    </app-patient-symptoms-chart>
+  }
+  <app-patient-profile [patient]="pService.currentPatient()"></app-patient-profile>
 </div>
+@if (selectedQ) {
+  <app-questionnaire-details
+    [data]="selectedQ"
+    [questions]="qService.QUESTIONS"
+    (close)="selectedQ = null"
+  >
+  </app-questionnaire-details>
+}

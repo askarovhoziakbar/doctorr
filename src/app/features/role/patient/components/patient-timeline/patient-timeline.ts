@@ -16,8 +16,6 @@ export class PatientTimeline {
   @Output() view = new EventEmitter<string>();
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     this.pService.initPatient().then((res) => {
       console.log('Инициализация данных пациента завершена:', res);
     });
@@ -29,10 +27,10 @@ export class PatientTimeline {
   }
 
   // Написать метод для получения обще заполненных данных для отображения в шаблоне
-  getTimelineData() {
+  /*getTimelineData() {
     const patient = this.pService.currentPatient();
     const questionnaires = this.pService.questionnaires();
     // Логика для получения данных временной шкалы
     console.log('Получение данных для временной шкалы:', { patient, questionnaires });
-  }
+  }*/
 }

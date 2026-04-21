@@ -4,16 +4,30 @@ import { DashboardHeader } from '../components/dashboard-header/dashboard-header
 import { PatientTimeline } from '../components/patient-timeline/patient-timeline';
 import { PatientService } from '../../../../core/services/patient-service';
 import { Router } from '@angular/router';
+import { QuestionnaireDetails } from '../components/questionnaire-details/questionnaire-details';
+import { QuestionnaireService } from '../../../../core/services/questionnaire-service';
+import { PatientResultsTable } from '../components/patient-results-table/patient-results-table';
+import { PatientSymptomsChart } from '../components/patient-symptoms-chart/patient-symptoms-chart';
+import { PatientProfile } from '../components/patient-profile/patient-profile';
 
 @Component({
   selector: 'app-patient-dashboard',
-  imports: [DashboardHeader, PatientTimeline],
+  imports: [
+    DashboardHeader,
+    PatientTimeline,
+    QuestionnaireDetails,
+    PatientResultsTable,
+    PatientSymptomsChart,
+    PatientProfile,
+  ],
   templateUrl: './patient-dashboard.html',
   styleUrl: './patient-dashboard.scss',
 })
 export class PatientDashboard {
   public pService = inject(PatientService);
   private router = inject(Router);
+  public qService = inject(QuestionnaireService);
+  public selectedQ: any = null;
 
   ngOnInit() {
     // 1. Получаем ID пациента из Auth (или sessionStorage, если ты так сделал)
@@ -31,7 +45,8 @@ export class PatientDashboard {
   }
 
   onView(id: string) {
-    console.log('Просмотр опросника:', id);
-    // Логика открытия модалки
+    const allQ = this.pService.questionnaires();
+
+    this.selectedQ = allQ.find((q: any) => q.id === id);
   }
 }
