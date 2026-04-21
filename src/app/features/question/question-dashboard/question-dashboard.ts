@@ -30,7 +30,7 @@ export class QuestionDashboard {
   scoreLabels = this.qService.SCORE_LABELS;
 
   // Состояние формы
-  answers: Record<number, number> = {};
+  answers: Record<string | number, number> = {};
   headerLabel: string = '';
   timePoint: number = 0;
 
@@ -43,7 +43,8 @@ export class QuestionDashboard {
     this.headerLabel = this.qService.getTimePointLabel(this.timePoint);
   }
 
-  handleAnswer(qId: number, score: number) {
+  handleAnswer(qId: number | string, score: number) {
+    // Реактивное обновление объекта
     this.answers = {
       ...this.answers,
       [qId]: score,

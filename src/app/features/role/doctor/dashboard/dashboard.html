@@ -1,1 +1,12 @@
-<p>dashboard works!</p>
+<div class="container">
+  <app-header (addPatient)="isModalOpen = true"></app-header>
+  <app-stats-grid></app-stats-grid>
+  <app-patients-list></app-patients-list>
+</div>
+
+<app-add-patient-modal
+  [isOpen]="isModalOpen"
+  (closeId)="isModalOpen = false"
+  (patientAdded)="loadAllData()"
+>
+</app-add-patient-modal>

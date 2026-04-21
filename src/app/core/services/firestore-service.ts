@@ -8,10 +8,14 @@ import {
   query,
   where,
   getDocs,
+  setDoc,
+  doc,
+  collectionData,
 } from '@angular/fire/firestore';
 import { User } from '../models/user.interface';
 import { Router } from '@angular/router';
 import { PatientService } from './patient-service';
+import { from, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -100,6 +104,19 @@ export class FirestoreService {
     return { success: false };
   }
 
+  async createPatient(data: any) {
+    // Указываем только коллекцию, без конкретного ID
+    const patientsRef = collection(this.firestore, 'patient');
+
+    try {
+      // addDoc сам сгенерирует случайный ID в Firebase
+      return await addDoc(patientsRef, data);
+    } catch (e) {
+      console.error('Ошибка при добавлении:', e);
+      throw e;
+    }
+  }
+
   redirectUser() {
     const role = this.userRole() || sessionStorage.getItem('user_role');
     const userId = sessionStorage.getItem('patientId'); // Или 'doctorId'
@@ -112,5 +129,26 @@ export class FirestoreService {
       console.warn('Ошибка редиректа: роль или ID отсутствуют');
       this.router.navigate(['/auth']);
     }
+  }
+
+  getPatients(): Observable<any[]> {
+    const patientsRef = collection(this.firestore, 'patient');
+    // Превращаем Promise от Firebase в Observable через from
+    return from(getDocs(patientsRef)).pipe(
+      map((snapshot) => snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))),
+    );
+  }
+
+  getReports(): Observable<any[]> {
+    const reportsRef = collection(this.firestore, 'reports'); // Название коллекции в Firebase
+
+    return from(getDocs(reportsRef)).pipe(
+      map((snapshot) =>
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
+      ),
+    );
   }
 }

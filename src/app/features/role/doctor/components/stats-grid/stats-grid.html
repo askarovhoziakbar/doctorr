@@ -1,0 +1,25 @@
+<div class="stats-grid">
+  <div class="stat-card primary">
+    <i class="fas fa-users"></i>
+    <div class="stat-value">{{ totalPatients() }}</div>
+    <div class="stat-label">Всего пациентов</div>
+  </div>
+
+  <div class="stat-card success">
+    <i class="fas fa-check-circle"></i>
+    <div class="stat-value">{{ completedQuestionnaires() }}</div>
+    <div class="stat-label">Заполненных опросников</div>
+  </div>
+
+  <div class="stat-card warning">
+    <i class="fas fa-clock"></i>
+    <div class="stat-value">{{ pendingQuestionnaires() }}</div>
+    <div class="stat-label">Ожидают заполнения</div>
+  </div>
+
+  <div class="stat-card info">
+    <i class="fas fa-chart-line"></i>
+    <div class="stat-value">{{ averageScore() }}</div>
+    <div class="stat-label">Средний балл GERD-HRQL</div>
+  </div>
+</div>

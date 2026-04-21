@@ -1,0 +1,168 @@
+<div class="container mt-4">
+  <div class="filter-panel table-container mb-3">
+    <div class="filter-container">
+      <div class="filter-group search-field">
+        <label class="filter-label"> <i class="fas fa-search"></i> Поиск пациентов </label>
+        <input
+          type="text"
+          class="form-control filter-input"
+          placeholder="Введите имя, фамилию, телефон или email..."
+          (input)="onSearch($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label"> <i class="fas fa-eye"></i> Вид отображения </label>
+        <div class="btn-group">
+          <button
+            class="btn btn-outline"
+            [class.active]="viewMode() === 'table'"
+            (click)="switchView('table')"
+          >
+            <i class="fas fa-table"></i> Таблица
+          </button>
+          <button
+            class="btn btn-outline"
+            [class.active]="viewMode() === 'cards'"
+            (click)="switchView('cards')"
+          >
+            <i class="fas fa-th-large"></i> Карточки
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label"> <i class="fas fa-sync-alt"></i> Обновление </label>
+        <button class="btn btn-outline refresh-btn" (click)="onRefresh()">
+          <i class="fas fa-sync-alt" [class.spinning]="isRefreshing()"></i>
+          Обновить данные
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (viewMode() === 'table') {
+    <div class="table-container fade-in">
+      <div class="table-header">
+        <h3><i class="fas fa-users"></i> Все пациенты (Таблица)</h3>
+        <p class="text-secondary mt-1">
+          Найдено: <strong>{{ filteredPatients().length }}</strong> из
+          <strong>{{ totalCount() }}</strong>
+        </p>
+      </div>
+
+      <div class="table-responsive">
+        <table class="patients-table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>ФИО и Статус</th>
+              <th>Возраст</th>
+              <th>Телефон</th>
+              <th>Регистрация</th>
+              <th>Опросники</th>
+              <th>Балл</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (patient of filteredPatients(); track patient.id; let i = $index) {
+              <tr>
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <div class="font-bold">{{ patient.lastName }} {{ patient.firstName }}</div>
+                  <small [class]="'status-badge ' + patient.status">
+                    @if (patient.status === 'overdue') {
+                      <i class="fas fa-exclamation-triangle"></i> Просрочено
+                    } @else if (patient.status === 'completed') {
+                      <i class="fas fa-check-circle"></i> Завершено
+                    } @else {
+                      <i class="fas fa-clock"></i> В процессе
+                    }
+                  </small>
+                </td>
+                <td>{{ patient.displayAge }}</td>
+                <td>{{ patient.phone }}</td>
+                <td>{{ patient.registrationDate | date: 'dd.MM.yyyy' }}</td>
+                <td>
+                  <strong>{{ patient.questionnairesCount }}/4</strong>
+                  <div class="progress-mini">
+                    <div
+                      class="progress-bar"
+                      [style.width.%]="(patient.questionnairesCount / 4) * 100"
+                    ></div>
+                  </div>
+                </td>
+                <td>
+                  <span [class]="'badge ' + getScoreClass(patient.lastScore)">
+                    {{ patient.lastScore > 0 ? patient.lastScore + '/50' : '—' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-icon" (click)="viewDetails(patient)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        @if (filteredPatients().length === 0) {
+          <div class="no-data"><i class="fas fa-info-circle"></i> Пациенты не найдены</div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="table-container fade-in">
+      <div class="table-header">
+        <h3><i class="fas fa-th-large"></i> Все пациенты (Карточки)</h3>
+      </div>
+
+      <div class="patients-grid">
+        @for (patient of filteredPatients(); track patient.id) {
+          <div class="patient-card" (click)="viewDetails(patient)">
+            <div class="card-main">
+              <div class="card-avatar">{{ patient.firstName[0] }}{{ patient.lastName[0] }}</div>
+              <div class="card-info">
+                <h4>{{ patient.lastName }} {{ patient.firstName }}</h4>
+                <p>
+                  <i class="fas fa-calendar"></i>
+                  {{ patient.registrationDate | date: 'dd.MM.yyyy' }}
+                </p>
+              </div>
+            </div>
+
+            <div class="card-status mt-2">
+              <span [class]="'status-badge ' + patient.status">
+                {{
+                  patient.status === 'overdue'
+                    ? 'Просрочено'
+                    : patient.status === 'completed'
+                      ? 'Завершено'
+                      : 'В процессе'
+                }}
+              </span>
+            </div>
+
+            <div class="card-stats mt-3">
+              <p><i class="fas fa-envelope"></i> {{ patient.email }}</p>
+              <p><i class="fas fa-phone"></i> {{ patient.phone }}</p>
+              <div class="mt-2">
+                <strong>Опросники: {{ patient.questionnairesCount }}/4</strong>
+                @if (patient.lastScore > 0) {
+                  <p>
+                    Последний балл:
+                    <span [class]="'badge ' + getScoreClass(patient.lastScore)"
+                      >{{ patient.lastScore }}/50</span
+                    >
+                  </p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

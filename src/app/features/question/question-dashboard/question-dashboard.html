@@ -15,7 +15,7 @@
     </app-question-card>
 
     <app-satisfaction-card
-      [selectedSatisfaction]="answers[11]"
+      [selectedSatisfaction]="answers[11] !== undefined ? answers[11] : answers['11']"
       (satisfactionSelected)="handleAnswer(11, $event)"
     >
     </app-satisfaction-card>

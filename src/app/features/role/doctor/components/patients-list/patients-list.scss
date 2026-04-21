@@ -1,0 +1,217 @@
+.filter-panel {
+  .filter-container {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &.search-field {
+      flex: 1;
+      max-width: 500px;
+    }
+  }
+
+  .filter-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color);
+  }
+
+  .filter-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+  }
+
+  // Анимация крутящейся иконки при обновлении
+  .spinning {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Адаптивность для мобилок
+@media (max-width: 768px) {
+  .filter-panel .filter-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-panel .filter-group.search-field {
+    max-width: 100%;
+  }
+}
+
+//table styles
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.patients-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  tr:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+  }
+}
+
+.patients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.patient-card {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  transition:
+    transform 0.2s,
+    shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+// Анимация появления
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+//modal styles
+/* Filter & View Controls */
+.btn-group {
+  display: inline-flex;
+  gap: 10px;
+
+  .btn {
+    padding: 10px 20px;
+
+    &.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+  }
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+/* Animations */
+.refresh-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Patient Status Badges */
+.patient-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  &.status-active {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  &.status-overdue {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  &.status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-group {
+    width: 100%;
+    .btn {
+      flex: 1;
+    }
+  }
+}
